@@ -396,3 +396,5 @@ class Lema3(Scene):
 
         self.play(ShowCreation(ponto_A), ShowCreation(ponto_A1))
         self.play(Write(A), Write(A1))
+
+        self.pl
