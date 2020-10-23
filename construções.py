@@ -1,5 +1,5 @@
 from manimlib.imports import *
-from math import radians,sin,cos
+from math import radians,sin,cos,sqrt
 
 class Mediatriz(Scene):
     def construct(self):
@@ -387,14 +387,83 @@ class Lema3(Scene):
         eixo_x = Line(ponto_O, np.array((6, -3, 0)), color=BLACK)
         self.add(eixo_y, eixo_x, ponto_O)
 
-        ponto_A = Dot(np.array((-1, -3, 0)), color=BLUE_F)
+        ponto_1 = Dot(np.array((-2, -3,0)), color=BLUE_F)
+        Um = Text("1")
+        Um.next_to(ponto_1, DOWN)
+        ponto_A = Dot(np.array((0, -3, 0)), color=BLUE_F)
         A = Text("A")
         A.next_to(ponto_A, DOWN)
-        ponto_A1 = Dot(np.array((1, -3, 0)), color=BLUE_F)
+        ponto_A1 = Dot(np.array((2, -3, 0)), color=BLUE_F)
         A1 = Text("A+1")
         A1.next_to(ponto_A1, DOWN)
 
-        self.play(ShowCreation(ponto_A), ShowCreation(ponto_A1))
-        self.play(Write(A), Write(A1))
+        self.play(ShowCreation(ponto_A), ShowCreation(ponto_1))
+        self.play(Write(A), Write(Um), Write(O))
 
-        self.pl
+        seg_1 = Line(ponto_O, ponto_1, color=GREEN_F, stroke_width=10)
+
+        self.play(ApplyMethod(seg_1.move_to, (1, -3, 0)))
+        self.play(ShowCreation(ponto_A1))
+        self.play(FadeOut(seg_1))
+        self.play(Write(A1))
+        self.wait()
+
+        ponto_M = Dot(np.array((-1, -3, 0)), color=BLUE_F)
+        M = Text("M")
+        M.next_to(ponto_M, DOWN)
+
+        self.play(ShowCreation(ponto_M))
+        self.wait()
+
+        centro = (-1, -3, 0)
+
+        raio = 3
+
+        theta = ValueTracker(0)
+        linha = Line(centro, centro+RIGHT*raio,color=GREEN_F, stroke_width=10)
+        circ = Arc(start_angle=math.radians(0), angle=math.radians(360), arc_center=centro, radius=raio, color=PURPLE_F, stroke_width=10)
+
+        linha.rotate(theta.get_value(),about_point=centro)
+        linha.add_updater(lambda m: m.set_angle(theta.get_value()))
+
+        self.play(ShowCreation(linha))
+        self.wait()
+        self.play(ShowCreation(circ), theta.increment_value,2*PI, rate_func=smooth, run_time=2)
+
+        self.play(
+            FadeOut(linha),
+            circ.set_stroke,{"opacity":0.5}
+            )
+
+        raiz_8 = math.sqrt(8)
+
+
+        ponto_P = Dot(np.array((0, -3+math.sqrt(8),0)), color=BLUE_F)
+        P = Text("P")
+        P.next_to(ponto_P, UP)
+
+        perpendicular_A = Line(ponto_A, ponto_P, color=GREEN_F)
+
+        self.play(ShowCreation(perpendicular_A), ShowCreation(ponto_P))
+        self.play(Write(P))
+        self.wait()
+
+        lado_a = Line(ponto_O, ponto_A, color=GREEN_F)
+        a_text = Text("a")
+        a_text.next_to(lado_a.get_center(), UP)
+        lado_1 = Line(ponto_A, ponto_A1, color=GREEN_F)
+        um_text = Text("1")
+        um_text.next_to(lado_1.get_center(), UP)
+        lado_c = Line(ponto_O, ponto_P, color=GREEN_F)
+        c_text = Text("c")
+        c_text.next_to(lado_c.get_center(), UP)
+        lado_b = Line(ponto_A1, ponto_P, color=GREEN_F)
+        b_text = Text("b")
+        b_text.next_to(lado_b.get_center(), RIGHT)
+        altura_h = Text("h")
+        altura_h.next_to(perpendicular_A, LEFT)
+
+        self.play(ShowCreation(lado_c), ShowCreation(lado_b))
+        self.play(FadeOut(circ), FadeOut(ponto_1), FadeOut(Um), FadeOut(ponto_M))
+        self.play(Write(c_text), Write(b_text), Write(a_text), Write(um_text), Write(altura_h))
+        self.wait()
